@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <title>SA Travel Companion</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #2563eb;
+      --danger: #ef4444;
+      --success: #4ade80;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      margin: 0;
+      padding-bottom: 5rem;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 1.25rem;
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .card {
+      background-color: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      text-align: center;
+    }
+
+    .label {
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .currency-input {
+      width: 100%;
+      font-size: 2.25rem;
+      font-weight: 700;
+      padding: 0.75rem;
+      background: #0f172a;
+      border: 2px solid #334155;
+      border-radius: 0.75rem;
+      color: #fff;
+      box-sizing: border-box;
+    }
+
+    .action-btn {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      margin: 1rem 0;
+    }
+
+    .result-card {
+      background-color: #0f172a;
+      border: 2px solid #334155;
+      padding: 1.25rem;
+      border-radius: 1rem;
+      text-align: center;
+    }
+
+    .result-amount {
+      font-size: 2.75rem;
+      font-weight: 800;
+      color: var(--success);
+    }
+
+    .emergency-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .emergency-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #280a0a;
+      border: 2px solid var(--danger);
+      color: #fca5a5;
+      text-decoration: none;
+      padding: 1rem 0.5rem;
+      border-radius: 0.75rem;
+      text-align: center;
+    }
+
+    .emergency-btn .num {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-top: 0.25rem;
+    }
+
+    .vault-input {
+      width: 100%;
+      padding: 0.75rem;
+      background: #0f172a;
+      border: 1px solid #334155;
+      color: white;
+      border-radius: 0.5rem;
+      box-sizing: border-box;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4.25rem;
+      background-color: #1e293b;
+      border-top: 2px solid #334155;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .nav-tab {
+      flex: 1;
+      height: 100%;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-tab.active {
+      color: #38bdf8;
+      border-top: 4px solid #38bdf8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- SCREEN 1: CONVERTER -->
+    <div id="screen-converter" class="screen active">
+      <div class="card">
+        <h1 class="title">AUD ⇄ ZAR Converter</h1>
+        
+        <label class="label" id="input-label" for="amount">Amount (AUD)</label>
+        <input type="number" id="amount" class="currency-input" value="1" step="any" oninput="calculate()">
+
+        <button class="action-btn" onclick="toggleDirection()">⇅ Swap Currency</button>
+
+        <div class="result-card">
+          <div class="label" id="result-label">Converted Amount (ZAR)</div>
+          <div class="result-amount" id="result-value">R 0.00</div>
+        </div>
+
+        <div style="text-align:center; color: var(--text-muted); margin-top: 1rem;" id="rate-status">
+          Fetching live rate...
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: SAFETRIP SA -->
+    <div id="screen-safetrip" class="screen">
+      <div class="card">
+        <h2 class="title" style="color: #fca5a5;">🚨 Emergency Dial</h2>
+        <div class="emergency-grid">
+          <a href="tel:10111" class="emergency-btn">
+            <span>Police (SAPS)</span>
+            <span class="num">10111</span>
+          </a>
+          <a href="tel:112" class="emergency-btn">
+            <span>Cell Emergency</span>
+            <span class="num">112</span>
+          </a>
+          <a href="tel:082911" class="emergency-btn">
+            <span>Netcare Medical</span>
+            <span class="num">082 911</span>
+          </a>
+          <a href="tel:0831232345" class="emergency-btn">
+            <span>Tourist Helpline</span>
+            <span class="num">083 123 2345</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="title">🔒 Offline Vault</h2>
+        <label class="label" for="v-passport">Passport Number</label>
+        <input type="text" id="v-passport" class="vault-input" placeholder="e.g. N1234567" oninput="saveVault()">
+
+        <label class="label" for="v-insurance">Insurance Policy Details</label>
+        <input type="text" id="v-insurance" class="vault-input" placeholder="Policy # and Emergency Hotline" oninput="saveVault()">
+
+        <label class="label" for="v-hotel">Local Hotel Name / Address</label>
+        <input type="text" id="v-hotel" class="vault-input" placeholder="Address for taxi / Uber driver" oninput="saveVault()">
+      </div>
+    </div>
+
+  </div>
+
+  <nav class="nav-bar">
+    <button class="nav-tab active" id="tab-converter" onclick="switchTab('converter')">
+      💱 Converter
+    </button>
+    <button class="nav-tab" id="tab-safetrip" onclick="switchTab('safetrip')">
+      🛡️ SafeTrip SA
+    </button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>
