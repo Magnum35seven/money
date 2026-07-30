@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <title>AUD ⇄ ZAR Converter</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 1rem;
+    }
+
+    .converter-card {
+      background-color: var(--card-bg);
+      width: 100%;
+      max-width: 480px;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Input Section */
+    .field-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .label {
+      display: block;
+      font-size: 1.125rem; /* 18px */
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Massive Text Input */
+    .currency-input {
+      width: 100%;
+      font-size: 2.25rem; /* 36px */
+      font-weight: 700;
+      padding: 0.75rem 1rem;
+      background: #0f172a;
+      border: 2px solid #334155;
+      border-radius: 0.75rem;
+      color: #ffffff;
+      box-sizing: border-box;
+    }
+
+    .currency-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Swap Action Button */
+    .swap-btn {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.25rem; /* 20px */
+      font-weight: 700;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      margin: 1rem 0;
+      transition: background-color 0.2s ease;
+    }
+
+    .swap-btn:hover {
+      background-color: var(--accent-hover);
+    }
+
+    /* Result Box - Ultra Large Display */
+    .result-card {
+      background-color: #0f172a;
+      border: 2px solid #334155;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .result-label {
+      font-size: 1.125rem; /* 18px */
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .result-amount {
+      font-size: 3rem; /* 48px */
+      font-weight: 800;
+      color: #4ade80; /* High-contrast green */
+      line-height: 1.1;
+      word-break: break-word;
+    }
+
+    /* Status & Sub-rates */
+    .rate-status {
+      font-size: 1rem; /* 16px */
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 1.25rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="converter-card">
+    <h1 class="title">Currency Converter</h1>
+
+    <!-- Amount Input -->
+    <div class="field-group">
+      <label class="label" id="input-label" for="amount">Amount (AUD)</label>
+      <div class="input-wrapper">
+        <input 
+          type="number" 
+          id="amount" 
+          class="currency-input" 
+          value="1" 
+          step="any"
+          placeholder="0"
+          oninput="calculateConversion()"
+        >
+      </div>
+    </div>
+
+    <!-- Swap Button -->
+    <button class="swap-btn" onclick="toggleDirection()">
+      ⇅ Swap Currency (AUD ⇄ ZAR)
+    </button>
+
+    <!-- Display Result -->
+    <div class="result-card">
+      <div class="result-label" id="result-label">Converted Amount (ZAR)</div>
+      <div class="result-amount" id="result-value">11.58 R</div>
+    </div>
+
+    <!-- Rate Info -->
+    <div class="rate-status" id="rate-status">
+      Live Rate: 1 AUD = 11.5800 ZAR
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
