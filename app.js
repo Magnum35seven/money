@@ -95,4 +95,6 @@ function loadVault() {
 document.addEventListener('DOMContentLoaded', () => {
   loadVault();
   fetchRate();
+  // Refresh rate every 2 hours (7200000ms)
+  setInterval(fetchRate, 7200000);
 });
