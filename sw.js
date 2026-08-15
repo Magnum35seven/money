@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sa-companion-v3';
+const CACHE_NAME = 'sa-companion-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -26,8 +26,8 @@ self.addEventListener('activate', (event) => {
 
 // Cache static app assets only; ignore external API calls
 self.addEventListener('fetch', (event) => {
-  if (event.request.url.includes('api.frankfurter.app')) {
-    return; // Allow live network fetch for currency API
+  if (event.request.url.includes('api.frankfurter.app') || event.request.url.includes('api.exchangerate.host')) {
+    return; // Allow live network fetch for currency APIs
   }
 
   event.respondWith(
