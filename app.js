@@ -20,7 +20,8 @@ function switchTab(tabName) {
 }
 
 // --- CONVERTER LOGIC ---
-let currentRate = parseFloat(localStorage.getItem('aud_zar_rate')) || 11.46;
+const DEFAULT_RATE = 11.46; // fallback only if live fetch and cache are unavailable
+let currentRate = null; // will be populated by fetchRate()
 let isAudToZar = true;
 
 // Use Frankfurter's supported parameters: from & to
@@ -36,11 +37,19 @@ async function fetchRate() {
     const data = await res.json();
     if (data && data.rates && data.rates.ZAR) {
       currentRate = parseFloat(data.rates.ZAR);
+      // persist the latest successful live rate for offline use
       localStorage.setItem('aud_zar_rate', currentRate);
       if (statusEl) statusEl.innerText = `Live Rate: 1 AUD = ${currentRate.toFixed(4)} ZAR`;
     }
   } catch (e) {
-    console.warn('Using offline cached rate:', e);
+    console.warn('Failed to fetch live rate, falling back to cached/default rate:', e);
+    // Prefer a cached value if available, otherwise use DEFAULT_RATE
+    const cached = parseFloat(localStorage.getItem('aud_zar_rate'));
+    if (!Number.isNaN(cached)) {
+      currentRate = cached;
+    } else {
+      currentRate = DEFAULT_RATE;
+    }
     if (statusEl) statusEl.innerText = `Offline Rate: 1 AUD = ${currentRate.toFixed(4)} ZAR`;
   }
   calculate();
@@ -52,6 +61,12 @@ function calculate() {
   if (!inputEl || !resultEl) return;
 
   const inputVal = parseFloat(inputEl.value) || 0;
+
+  // If rate isn't available yet, show a placeholder
+  if (currentRate === null) {
+    resultEl.innerText = 'Fetching rate...';
+    return;
+  }
 
   if (isAudToZar) {
     const total = inputVal * currentRate;
@@ -95,7 +110,8 @@ function loadVault() {
 // Initialize on DOM load
 document.addEventListener('DOMContentLoaded', () => {
   loadVault();
+  // Always attempt a live fetch immediately on load
   fetchRate();
-  // Refresh rate every 5 minutes (300000ms)
-  setInterval(fetchRate, 300000);
+  // Refresh rate every 1 minute (60000ms) to keep it more up-to-date automatically
+  setInterval(fetchRate, 60000);
 });
