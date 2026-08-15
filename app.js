@@ -23,18 +23,19 @@ function switchTab(tabName) {
 let currentRate = parseFloat(localStorage.getItem('aud_zar_rate')) || 11.58;
 let isAudToZar = true;
 
-// FIXED API ENDPOINT: Uses base=AUD&symbols=ZAR
-const API_URL = 'https://api.frankfurter.app/latest?base=AUD&symbols=ZAR';
+// Use Frankfurter's supported parameters: from & to
+const API_URL = 'https://api.frankfurter.app/latest?from=AUD&to=ZAR';
 
 async function fetchRate() {
   const statusEl = document.getElementById('rate-status');
   try {
-    const res = await fetch(API_URL);
+    // Add cache-buster to avoid cached responses
+    const res = await fetch(`${API_URL}&_=${Date.now()}`);
     if (!res.ok) throw new Error('Network response failed');
     
     const data = await res.json();
     if (data && data.rates && data.rates.ZAR) {
-      currentRate = data.rates.ZAR;
+      currentRate = parseFloat(data.rates.ZAR);
       localStorage.setItem('aud_zar_rate', currentRate);
       if (statusEl) statusEl.innerText = `Live Rate: 1 AUD = ${currentRate.toFixed(4)} ZAR`;
     }
