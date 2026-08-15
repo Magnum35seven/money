@@ -20,7 +20,7 @@ function switchTab(tabName) {
 }
 
 // --- CONVERTER LOGIC ---
-let currentRate = parseFloat(localStorage.getItem('aud_zar_rate')) || 11.58;
+let currentRate = parseFloat(localStorage.getItem('aud_zar_rate')) || 11.46;
 let isAudToZar = true;
 
 // Use Frankfurter's supported parameters: from & to
